@@ -7,26 +7,26 @@
 
 import SwiftUI
 
-public struct SDSStatefulButton<OnLabel:View, OffLabel:View> : View {
+public struct SDSStatefulButton<TrueLabel:View, FalseLabel:View> : View {
     @State private var bValue: Bool
-    var trueLabel: OnLabel
-    var falseLabel: OffLabel
-    var completion: ((Bool) -> Void)?
+    var trueLabel: TrueLabel
+    var falseLabel: FalseLabel
+    var onChange: ((Bool) -> Void)?
     
     public init(_ initialValue: Bool,
-         @ViewBuilder onLabel: () -> OnLabel,
-         @ViewBuilder offLabel: () -> OffLabel,
-         completion: ((Bool) -> Void)? = nil) {
+         @ViewBuilder trueLabel: () -> TrueLabel,
+         @ViewBuilder falseLabel: () -> FalseLabel,
+         onChange: ((Bool) -> Void)? = nil) {
         self._bValue = State(wrappedValue: initialValue)
-        self.trueLabel = onLabel()
-        self.falseLabel = offLabel()
-        self.completion = completion
+        self.trueLabel = trueLabel()
+        self.falseLabel = falseLabel()
+        self.onChange = onChange
     }
     
     public var body: some View {
         Button(action: {
             self.bValue.toggle()
-            completion?(self.bValue)
+            onChange?(self.bValue)
         }, label: {
             if bValue {
                 trueLabel
